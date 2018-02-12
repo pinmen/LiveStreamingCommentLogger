@@ -1,0 +1,105 @@
+﻿<Window x:Class="YoutubeLiveCommentViewer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:debug="debug-mode"
+        xmlns:local="clr-namespace:YoutubeLiveCommentViewer"
+        mc:Ignorable="mc d debug"
+        Title="MainWindow" Height="600" Width="800">
+    <Grid Margin="0,2,0,-2">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"></ColumnDefinition>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <DockPanel Grid.Column="0">
+            <DockPanel DockPanel.Dock="Top">
+
+                <Button DockPanel.Dock="Right" Command="{Binding browser.JumpToURL}" Content="Jump"/>
+                <TextBox Text="{Binding Path=browser.BrowsingURI, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Gesture="Enter" Command="{Binding browser.JumpToURL}"/>
+                    </TextBox.InputBindings>
+                </TextBox>
+                <!--<Button DockPanel.Dock="Right" Command="{Binding JumpToURL}" CommandParameter="{Binding ElementName=_BrowsingURI, Path=Text}">Jump</Button>
+                <TextBox Name="_BrowsingURI" Text="{Binding Path=BrowsingURL, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Gesture="Enter" Command="{Binding JumpToURL}" CommandParameter="{Binding ElementName=_BrowsingURI, Path=Text}"/>
+                    </TextBox.InputBindings>
+                </TextBox>-->
+            </DockPanel>
+            <WebBrowser Name="_Browser"/>
+        </DockPanel>
+
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Width="5" Background="#FF5B5B5B"/>
+
+        <TabControl Grid.Column="2">
+            <TabItem Header="comment">
+                <DataGrid ItemsSource="{Binding Path=browser.CommentList.Comments}" AutoGenerateColumns="False" HeadersVisibility="None" CanUserAddRows="False" BorderThickness="0" Padding="0" VerticalGridLinesBrush="White" HorizontalGridLinesBrush="White" Background="White">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image MaxWidth="25" Source="{Binding Path=ImageURI}"/>
+                                        <Label Content="{Binding Path=AuthorName}"/>
+                                        <Label Content="{Binding Path=Content}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+            <TabItem Header="channel">
+                <StackPanel>
+                    <!--<TextBox Text="{Binding Path=ChannelURI, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>-->
+                    <StackPanel Orientation="Horizontal">
+                        <Image MaxWidth="25" Source="{Binding Path=browser.BrowsingChannel.ImageURI, Mode=OneWay}"/>
+                        <Label Content="{Binding Path=browser.BrowsingChannel.Name, Mode=OneWay}"/>
+                    </StackPanel>
+                    <Button Command="{Binding browser.AddChannel}" Content="+ Add"/>
+                    <DataGrid ItemsSource="{Binding Path=browser.ChannelList.Channels}" AutoGenerateColumns="False" HeadersVisibility="None" CanUserAddRows="False" BorderThickness="0" Padding="0" VerticalGridLinesBrush="White" HorizontalGridLinesBrush="White" Background="White">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image MaxWidth="25" Source="{Binding Path=ImageURI}"/>
+                                            <Label Content="{Binding Path=Name}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+                <!--<StackPanel>
+                    <TextBox Name="_ChannelURI" Text="{Binding Path=BrowsingURL, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Gesture="Enter" Command="{Binding AddChannel}" CommandParameter="{Binding ElementName=_ChannelURI, Path=Text}"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
+                    <Button Command="{Binding AddChannel}" CommandParameter="{Binding ElementName=_ChannelURI, Path=Text}">Add</Button>
+                </StackPanel>-->
+            </TabItem>
+            <TabItem Header="config">
+                <!--<TextBox Text="{Binding Path=APIKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>-->
+                <DataGrid ItemsSource="{Binding Path=settings}"></DataGrid>
+            </TabItem>
+            <!--<TabItem Visibility="{x:Static local:DebugMgr.IsDebugVisible}" Header="debug">-->
+            <mc:AlternateContent>
+                <mc:Choice Requires="debug">
+                    <TabItem Header="debug">
+                        <!--<Button Command="{Binding }"/>-->
+                    </TabItem>
+                </mc:Choice>
+                <mc:Fallback>
+                    <TabItem Header="test"/>
+                </mc:Fallback>
+            </mc:AlternateContent>
+        </TabControl>
+    </Grid>
+</Window>
